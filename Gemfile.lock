@@ -1,7 +1,57 @@
+GIT
+  remote: git://github.com/mk2/hyalite.git
+  revision: 8af91ea8f45f41292d49035f73adf578198b6bb4
+  specs:
+    hyalite (0.0.1)
+      opal
+      opal-browser
+
+GIT
+  remote: git://github.com/opal/opal-browser.git
+  revision: 815348e913ea79d65044db4dee3bbeea87be763d
+  specs:
+    opal-browser (0.2.0)
+      opal
+      paggio
+
+GIT
+  remote: git://github.com/opal/opal-haml.git
+  revision: ca3d7339098dc115c0cedb9f1aeccd1f7187dd71
+  specs:
+    opal-haml (0.4.1)
+      haml
+      opal (>= 0.5.0, < 1.0.0)
+
+GIT
+  remote: git://github.com/opal/opal.git
+  revision: 59e7a48f5b6d62b26a7f4b3c6d284aee751b2c3b
+  specs:
+    opal (0.11.0.dev)
+      ast (>= 2.3.0)
+      hike (~> 1.2)
+      parser (>= 2.3.1.2)
+      sourcemap (~> 0.1.0)
+      sprockets (~> 3.1)
+      tilt (>= 1.4)
+
 GEM
   remote: https://rubygems.org/
   specs:
+    ast (2.3.0)
+    concurrent-ruby (1.0.2)
     execjs (2.7.0)
+    haml (4.0.7)
+      tilt
+    hike (1.2.3)
+    paggio (0.2.6)
+    parser (2.3.1.2)
+      ast (~> 2.2)
+    rack (2.0.1)
+    sourcemap (0.1.1)
+    sprockets (3.6.3)
+      concurrent-ruby (~> 1.0)
+      rack (> 1, < 3)
+    tilt (2.0.5)
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
 
@@ -9,7 +59,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  hyalite!
+  opal!
+  opal-browser!
+  opal-haml!
   uglifier
 
 BUNDLED WITH
-   1.11.2
+   1.12.5
