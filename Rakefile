@@ -2,6 +2,8 @@ require 'json'
 require 'date'
 require 'uglifier'
 
+Encoding.default_external = "utf-8"
+
 desc 'compile blog files into json data and craete index.html from index.tmpl'
 task :compile do
   js = ["jquery.min", "jquery.easing.1.3.min", "skel.min", "util", "marked.min", "react.min", "react-dom.min", "main"]
