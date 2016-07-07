@@ -38,8 +38,11 @@ class BlogView
   include Hyalite::Component::ShortHand
 
   def render
-    section({id: 'one', className: 'wrapper special'},
-      Hyalite.create_element(BlogItem, @props[:blog]))
+    blog_src = @props[:blog]
+    blog_src ?
+      section({id: 'one', className: 'wrapper special'},
+        Hyalite.create_element(BlogItem, @props[:blog])) :
+      div()
   end
 
 end
@@ -53,6 +56,14 @@ class Page
   CopyRight =
     "<li>&copy; NIJIBOX Co.,Ltd. </li><li>Design: <a href='http://templated.co'>TEMPLATED</a>, Photo: <a href='https://www.flickr.com/photos/itseacrane/6701113981/in/photolist-bd9XHX-6Kusan-6KyB7E-6KyB9W-6KyBcC-6KutKn-6KyzTq-6KyBtm-6Kuu8K-81PPWe-djvrbZ-bd9khz-6yw28t-5FRJyv-6KyBss-6KyBb1-6EZMHA-9CBrdG-6Kus6z-6KyzNY-6yw2ez-6yw23R-6yw472-9ByM9q-6dTPzh-6dTPks-6dPEnV-6dTPWS-6dTP4y-4vR9YB-nmg6SE-8hnoDm-9Bvp2Z-nmg6uf-8hj9c2-nokSqA-8zxwdh-478ePV-8H4wzM-h8q2QP-8zumJn-ufWBZP-4ygzww-noixsv-aeT8AM-4ch3Ye-4ygzxu-4yckPk-47cj4h-f6cKaN'>Sea Crane</a>.</li>"
 
+  def render_article
+    full_path = Native(`window`)[:location][:pathname] || ''
+    hash_contained_page_path = full_path.split('/').pop || ''
+    page_path = hash_contained_page_path.split("#").shift # '/hoge/page#2' -> page
+
+    Hyalite.create_element(BlogView, {blog: @props[:blogs].select{ |b| b[:slug] == page_path }.shift})
+  end
+
   def render
     Hyalite.create_element('container', nil,
       header({id: 'header', className: 'alt'},
@@ -61,6 +72,7 @@ class Page
       section({id: 'banner'},
         i({className: 'icon'}),
         h3(nil, '俺が魂を込めれば')),
+      render_article,
       section({id: 'post', className: 'wrapper style3 special'},
         div({className: 'inner'},
           header({className: 'major narrow'},
