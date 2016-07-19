@@ -1,6 +1,7 @@
 require 'json'
 require 'date'
 require 'uglifier'
+require 'sitemap_generator'
 
 Encoding.default_external = "utf-8"
 
@@ -20,5 +21,12 @@ task :compile do
     File.symlink "index.html", "#{result.last[:slug]}.html" if !File.exists?("#{result.last[:slug]}.html")
   end 
   File.write("index.html", File.open("index.tmpl").read.gsub(/###___REPLACE_HERE___/, result.reverse.map{|a| a.to_json}.join(",")))
+  SitemapGenerator::Sitemap.default_host = 'http://tech.nijibox.jp'
+  SitemapGenerator::Sitemap.create do
+    add "/", :changefreq => 'always'
+    result.each do |page|
+      add "/#{page[:slug]}", :changefreq => 'daily'
+    end
+  end
 end
 

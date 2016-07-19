@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/mk2/hyalite.git
-  revision: 8af91ea8f45f41292d49035f73adf578198b6bb4
-  specs:
-    hyalite (0.0.1)
-      opal
-      opal-browser
-
-GIT
   remote: git://github.com/opal/opal-browser.git
   revision: 815348e913ea79d65044db4dee3bbeea87be763d
   specs:
@@ -24,7 +16,7 @@ GIT
 
 GIT
   remote: git://github.com/opal/opal.git
-  revision: 59e7a48f5b6d62b26a7f4b3c6d284aee751b2c3b
+  revision: ec015e9b136a6a7d550ef9aa05bff294056bb73b
   specs:
     opal (0.11.0.dev)
       ast (>= 2.3.0)
@@ -34,10 +26,19 @@ GIT
       sprockets (~> 3.1)
       tilt (>= 1.4)
 
+GIT
+  remote: git://github.com/youchan/hyalite.git
+  revision: e5b11f98efb886dbd39f79e93ffa26325244baf9
+  specs:
+    hyalite (0.0.1)
+      opal
+      opal-browser
+
 GEM
   remote: https://rubygems.org/
   specs:
     ast (2.3.0)
+    builder (3.2.2)
     concurrent-ruby (1.0.2)
     execjs (2.7.0)
     haml (4.0.7)
@@ -47,6 +48,8 @@ GEM
     parser (2.3.1.2)
       ast (~> 2.2)
     rack (2.0.1)
+    sitemap_generator (5.1.0)
+      builder
     sourcemap (0.1.1)
     sprockets (3.6.3)
       concurrent-ruby (~> 1.0)
@@ -63,6 +66,7 @@ DEPENDENCIES
   opal!
   opal-browser!
   opal-haml!
+  sitemap_generator
   uglifier
 
 BUNDLED WITH

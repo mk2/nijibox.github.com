@@ -1,0 +1,1 @@
+Sitemap: http://tech.nijibox.jp/public/sitemap.xml.gz
