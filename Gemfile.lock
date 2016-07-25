@@ -15,6 +15,13 @@ GIT
       opal (>= 0.5.0, < 1.0.0)
 
 GIT
+  remote: git://github.com/opal/opal-jquery.git
+  revision: 4aeadfc91d5906f6b8958877110bc1f66cc694a7
+  specs:
+    opal-jquery (0.4.2)
+      opal (>= 0.7.0, < 0.11.0)
+
+GIT
   remote: git://github.com/opal/opal.git
   revision: ec015e9b136a6a7d550ef9aa05bff294056bb73b
   specs:
@@ -66,6 +73,7 @@ DEPENDENCIES
   opal!
   opal-browser!
   opal-haml!
+  opal-jquery!
   sitemap_generator
   uglifier
 

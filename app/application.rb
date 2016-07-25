@@ -1,6 +1,12 @@
-require 'hyalite'
+require 'opal'
+require 'opal-jquery'
+require 'browser'
+require 'browser/history'
 require 'js'
 require 'native'
+require 'hyalite'
+
+Element.expose :animate
 
 class BlogItem
   include Hyalite::Component
@@ -11,7 +17,7 @@ class BlogItem
       a({href: "/#{@props[:slug]}"},
         h2(nil, @props[:title])),
       p(nil, @props[:date]),
-      span({dangerouslySetInnerHTML: {__html: JS.marked(@props[:text])}, style: {textAlign: 'left'}}))
+      span({style: {textAlign: 'left'}, dangerouslySetInnerHTML: {__html: JS.marked(@props[:text])}}))
   end
 
 end
@@ -61,7 +67,15 @@ class Page
     hash_contained_page_path = full_path.split('/').pop || ''
     page_path = hash_contained_page_path.split("#").shift # '/hoge/page#2' -> page
 
-    Hyalite.create_element(BlogView, {blog: @props[:blogs].select{ |b| b[:slug] == page_path }.shift})
+    case page_path
+    when '', 'index.html', nil then
+      section(nil,
+          Hyalite.create_element(BlogView, {blog: @props[:blogs][0]}),
+          Hyalite.create_element(BlogView, {blog: @props[:blogs][1]})
+        )
+    else
+      Hyalite.create_element(BlogView, {blog: @props[:blogs].select{ |b| b[:slug] == page_path }.shift})
+    end
   end
 
   def render
@@ -111,13 +125,32 @@ class Application
   def initial_state
     {
       blogs: [
-          {key: 5,date: "2016.06.27", slug: "yochiyochi-nb-2", title: "よちよち.nb 2016/06/27 レポート", text: "\nどうも開発室所属の[@mk2](https://github.com/mk2)です。\n\n6月27日開催分のよちよち.nbレポートです。\n\n![photo](blogs/20160627-yochiyochi-nb/photo.png)\n\n# やったこと\n\n- paizaの[恋するハッカソン　〜君色に染まるアイドル〜](https://paiza.jp/poh/hatsukoi)\n\nプログラミングクイズを解いて自分好みのアイドルを作っていくゲームです。プログラミングクイズを解くたびに新しい衣装をもらえるので、自分好みのルックスのアイドルを自由自在に作ることが出来ます。\n\n例えばそう、下のような！！\n\n![paiza](blogs/20160627-yochiyochi-nb/paiza.png)\n\n諸々の事情によりモザイクをかけておりますが、\n\n- 恋するハッカソンはHTMLで作られている\n\n上記１点からお察しください。\n\nというわけで、よちよち.nbは今回も平常運転でした！\n"}
+          {key: 5,date: "2016.06.27", slug: "yochiyochi-nb-2", title: "よちよち.nb 2016/06/27 レポート", text: "\nどうも開発室所属の[@mk2](https://github.com/mk2)です。\n\n6月27日開催分のよちよち.nbレポートです。\n\n![photo](blogs/20160627-yochiyochi-nb/photo.png)\n\n# やったこと\n\n- paizaの[恋するハッカソン　〜君色に染まるアイドル〜](https://paiza.jp/poh/hatsukoi)\n\nプログラミングクイズを解いて自分好みのアイドルを作っていくゲームです。プログラミングクイズを解くたびに新しい衣装をもらえるので、自分好みのルックスのアイドルを自由自在に作ることが出来ます。\n\n例えばそう、下のような！！\n\n![paiza](blogs/20160627-yochiyochi-nb/paiza.png)\n\n諸々の事情によりモザイクをかけておりますが、\n\n- 恋するハッカソンはHTMLで作られている\n\n上記１点からお察しください。\n\nというわけで、よちよち.nbは今回も平常運転でした！\n"},
+          {key: 6,date: "2016.06.27", slug: "yochiyochi-nb-3", title: "よちよち.nb 2016/06/27 レポート", text: "\nどうも開発室所属の[@mk2](https://github.com/mk2)です。\n\n6月27日開催分のよちよち.nbレポートです。\n\n![photo](blogs/20160627-yochiyochi-nb/photo.png)\n\n# やったこと\n\n- paizaの[恋するハッカソン　〜君色に染まるアイドル〜](https://paiza.jp/poh/hatsukoi)\n\nプログラミングクイズを解いて自分好みのアイドルを作っていくゲームです。プログラミングクイズを解くたびに新しい衣装をもらえるので、自分好みのルックスのアイドルを自由自在に作ることが出来ます。\n\n例えばそう、下のような！！\n\n![paiza](blogs/20160627-yochiyochi-nb/paiza.png)\n\n諸々の事情によりモザイクをかけておりますが、\n\n- 恋するハッカソンはHTMLで作られている\n\n上記１点からお察しください。\n\nというわけで、よちよち.nbは今回も平常運転でした！\n"}
       ],
       location: Native(`window`)[:location][:hash],
-      transitionProps: -> {
-        {onClick: -> { puts 'transitionProps clicked' }}
+      transitionProps: -> title {
+        {onClick: -> {
+            history = $window.history
+            history.push(title)
+            %x{
+              $('html,body').animate({scrollTop: document.getElementById("post").getBoundingClientRect().height-35},500,"easeOutExpo")
+            }
+            navigated
+          }
+        }
       }
     }
+  end
+
+  def component_did_mount
+    Native(`window`)[:addEventListener].('hashchange', navigated, false)
+    Native(`window`)[:addEventListener].('popstate', navigated, false)
+    navigated
+  end
+
+  def navigated
+    set_state(location: Native(`window`)[:location][:hash])
   end
 
   def render

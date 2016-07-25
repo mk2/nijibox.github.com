@@ -95,7 +95,7 @@ var Application = React.createClass({
             )
           ),
           React.createElement('ul', {className:"actions"},
-            React.createElement('li', {}, 
+            React.createElement('li', {},
               React.createElement('a', {href:"http://nijibox-recruit.jp/engineer", className: "button big alt"}, "詳しくはこちら"
               )
             )
@@ -141,12 +141,12 @@ var BlogItem = React.createClass({
       return (
         React.createElement('div', {className:"inner"},
           React.createElement('a', {href:"/"+this.props.slug},
-            React.createElement('h2', {}, 
+            React.createElement('h2', {},
               this.props.title
             )
           ),
           React.createElement('p', {}, this.props.date),
-          React.createElement('span', {dangerouslySetInnerHTML:{__html:marked(this.props.text)}, style:{textAlign:"left"}}
+          React.createElement('span', {dangerouslySetInnerHTML:{__html:marked(this.props.text)}, style:{textAligntextAlign:"left"}}
           )
         )
       )
@@ -163,7 +163,7 @@ var BlogListView = React.createClass({
     var blogItemElements = this.props.blogs
       .map(function(blog) {
         return React.createElement('div', blog,
-          React.createElement('h3', {}, 
+          React.createElement('h3', {},
             React.createElement('a', self.props.transitionProps(blog.slug), blog.date + ': ' + blog.title)
           )
         )
