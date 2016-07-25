@@ -1,0 +1,203 @@
+
+// Polyfill for Object.assign
+// https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#Polyfill
+if (typeof Object.assign != 'function') {
+  Object.assign = function(target) {
+    'use strict';
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+}
+
+/*
+ * Components
+ */
+var Application = React.createClass({
+  propTypes: {
+    location: React.PropTypes.string.isRequired
+  },
+  transitionProps: function(title){
+    return {onClick: function(){
+      history.pushState(null,null,title);
+      $('html,body').animate({scrollTop: document.getElementById("post").getBoundingClientRect().height-35},500,"easeOutExpo");
+      navigated();
+    }}
+  },
+  render: function(){
+    page = window.location.pathname.split('/').pop().split('#').shift()
+    switch(page) {
+    case '':
+    case 'index.html':
+      //section = React.createElement('section', {id:"one", className:"wrapper special"},
+      section = React.createElement('section', {},
+        React.createElement(BlogView,
+          Object.assign({}, this.props, {blog:this.props.blogs[0]})
+        ),
+        React.createElement(BlogView,
+          Object.assign({}, this.props, {blog:this.props.blogs[1]})
+        )
+      );
+      break;
+    default:
+      section = React.createElement(BlogView,
+        Object.assign({}, this.props,
+          {blog:this.props.blogs.filter(function(blog){ return blog.slug==page?blog:null})[0]}
+        )
+      )
+    }
+    return React.createElement('container', {},
+      React.createElement('header', { id:"header", className:"alt"},
+        React.createElement('h3', {},
+          React.createElement('a', {href:'/'}, 'NIJIBOX Engineer Blog')
+        )
+      ),
+      React.createElement('section', {id:"banner"},
+        React.createElement('i', {className:"icon"}),
+        React.createElement('h2', {}, "俺が魂を込めれば")
+      ),
+      section,
+      React.createElement('section', {id:"post", className:"wrapper style3 special"},
+        React.createElement('div', {className:"inner"},
+          React.createElement('header', {className:"major narrow"},
+            React.createElement('h2', {}, "We Are Hiring! 積極採用中"),
+            React.createElement('p', {}, "NIJIBOXの組織文化や働きやすい制度、技術的な背景など表から裏まで紙面の許す限り更に詳しく紹介します"
+            )
+          ),
+          React.createElement('ul', {className:"actions"},
+            React.createElement('li', {}, 
+              React.createElement('a', {href:"http://nijibox-recruit.jp/engineer", className: "button big alt"}, "詳しくはこちら"
+              )
+            )
+          )
+        )
+      ),
+      React.createElement('footer', { id:"footer"},
+        React.createElement('div', {className:"inner"},
+          React.createElement('article', {className:"feature left"},
+            React.createElement('div', {className:"content"},
+              React.createElement('h2', {}, "About Us"),
+              React.createElement('span', {dangerouslySetInnerHTML:{__html:marked("リクルートグループの新規事業開発を担当するMedia Technology Lab.や自社顧客からの受託開発、およびNijibox自社のサービス開発・マーケティングソリューション導入を行っています。技術情報は[Qiita](https://qiita.com/organizations/nijibox)で。不定期に[築地ッカソン](https://www.facebook.com/tsukijickathon/)というハッカソンイベントもやってます！")}, style:{textAlign:"left"}}
+              )
+            ),
+            React.createElement('span', {className:"image"},
+              React.createElement('img', {src:"images/company.png"}))
+          ),
+          React.createElement('article', {},
+            React.createElement(BlogListView,
+              Object.assign({}, this.props,
+                {transitionProps:this.transitionProps}
+              )
+            )
+          )
+        ),
+        React.createElement('div', {className:"inner"},
+          React.createElement('ul', {className:"copyright", dangerouslySetInnerHTML:{__html:"<li>&copy; NIJIBOX Co.,Ltd. </li><li>Design: <a href='http://templated.co'>TEMPLATED</a>, Photo: <a href='https://www.flickr.com/photos/itseacrane/6701113981/in/photolist-bd9XHX-6Kusan-6KyB7E-6KyB9W-6KyBcC-6KutKn-6KyzTq-6KyBtm-6Kuu8K-81PPWe-djvrbZ-bd9khz-6yw28t-5FRJyv-6KyBss-6KyBb1-6EZMHA-9CBrdG-6Kus6z-6KyzNY-6yw2ez-6yw23R-6yw472-9ByM9q-6dTPzh-6dTPks-6dPEnV-6dTPWS-6dTP4y-4vR9YB-nmg6SE-8hnoDm-9Bvp2Z-nmg6uf-8hj9c2-nokSqA-8zxwdh-478ePV-8H4wzM-h8q2QP-8zumJn-ufWBZP-4ygzww-noixsv-aeT8AM-4ch3Ye-4ygzxu-4yckPk-47cj4h-f6cKaN'>Sea Crane</a>.</li>"}}
+          )
+        )
+      )
+    )
+  }
+})
+
+var BlogItem = React.createClass({
+    propTypes: {
+      date: React.PropTypes.string.isRequired,
+      slug: React.PropTypes.string.isRequired,
+      title: React.PropTypes.string.isRequired,
+      text: React.PropTypes.string.isRequired,
+    },
+    render: function(){
+      return (
+        React.createElement('div', {className:"inner"},
+          React.createElement('a', {href:"/"+this.props.slug},
+            React.createElement('h2', {}, 
+              this.props.title
+            )
+          ),
+          React.createElement('p', {}, this.props.date),
+          React.createElement('span', {dangerouslySetInnerHTML:{__html:marked(this.props.text)}, style:{textAlign:"left"}}
+          )
+        )
+      )
+    }
+  })
+
+var BlogListView = React.createClass({
+  propTypes: {
+    blogs: React.PropTypes.array.isRequired,
+    transitionProps: React.PropTypes.func.isRequired
+  },
+  render: function(){
+    var self = this;
+    var blogItemElements = this.props.blogs
+      .map(function(blog) {
+        return React.createElement('div', blog,
+          React.createElement('h3', {}, 
+            React.createElement('a', self.props.transitionProps(blog.slug), blog.date + ': ' + blog.title)
+          )
+        )
+      })
+    return React.createElement('section', {id:"one", className:"wrapper special"},
+      React.createElement('h2', {style:{marginBottom:"40px"}}, "ブログ記事 アーカイブ"),
+      blogItemElements)
+  }
+})
+
+var BlogView = React.createClass({
+  propTypes: {
+    blog: React.PropTypes.object.isRequired,
+  },
+  render: function(){
+    var blogItemElements = this.props.blogs
+      .map(function(blog) { return React.createElement( BlogItem, blog) })
+    return React.createElement('section', {id:"one", className:"wrapper special"},
+      React.createElement(BlogItem, this.props.blog)
+    )
+  }
+})
+
+
+/*
+ * Actions
+ */
+function navigated(){
+  setState({location:window.location.hash})
+}
+
+/*
+ * Model
+ */
+var state = {
+  blogs: [
+{###___BLOG_ENTRIES___###}
+  ],
+  location: window.location.hash
+};
+
+function setState(changes){
+  var component;
+  Object.assign(state, changes);
+  ReactDOM.render(
+    React.createElement(Application, state),
+    document.getElementById('react-app')
+  )
+}
+
+window.addEventListener('hashchange', navigated, false);
+window.addEventListener('popstate', navigated, false);
+
+navigated()
