@@ -17,7 +17,7 @@ class BlogItem
       a({href: "/#{@props[:slug]}"},
         h2(nil, @props[:title])),
       p(nil, @props[:date]),
-      span({style: {textAlign: 'left'}, dangerouslySetInnerHTML: {__html: JS.marked(@props[:text])}}))
+      span({style: {"text-align": 'left'}, dangerouslySetInnerHTML: {__html: JS.marked(@props[:text])}}))
   end
 
 end
@@ -101,7 +101,7 @@ class Page
           article({className: 'feature left'},
             div({className: 'content'},
               h2(nil, 'About Us'),
-              span({dangerouslySetInnerHTML: {__html: JS.marked(AboutUs)}, style: {textAlign: 'left'}})),
+              span({dangerouslySetInnerHTML: {__html: JS.marked(AboutUs)}, style: {"text-align": 'left'}})),
             span({className: 'image'},
               img({src: 'images/company.png'})),
             ),
